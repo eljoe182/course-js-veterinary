@@ -1,0 +1,9 @@
+export const form = document.querySelector("#nueva-cita");
+export const petName = document.querySelector("#mascota");
+export const ownerName = document.querySelector("#propietario");
+export const phoneNumber = document.querySelector("#telefono");
+export const date = document.querySelector("#fecha");
+export const time = document.querySelector("#hora");
+export const symptoms = document.querySelector("#sintomas");
+export const dateList = document.querySelector("#citas");
+export const btnSave = document.querySelector("button[type=submit]");
