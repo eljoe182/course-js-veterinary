@@ -1,20 +1,16 @@
+import Database, { db } from "./DB.class.js";
+
+const database = new Database();
 class Schedule {
-  constructor() {
-    this.schedules = [];
-  }
-  addSchedule(values) {
-    this.schedules = [...this.schedules, values];
-  }
-  getSchedule(id) {
-    return this.schedules.find((schedule) => schedule.id === id);
+  constructor() {}
+  storeSchedule(values) {
+    database.storeData(values);
   }
   deleteSchedule(id) {
-    this.schedules = this.schedules.filter((schedule) => schedule.id !== id);
+    database.deleteData(id);
   }
-  editSchedule(id, values) {
-    this.schedules = this.schedules.map((schedule) =>
-      schedule.id === id ? values : schedule
-    );
+  updateSchedule(id, values) {
+    database.updateData(id, values);
   }
 }
 

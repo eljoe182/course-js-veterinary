@@ -1,3 +1,4 @@
+import { db } from "./class/DB.class.js";
 import Schedule from "./class/Schedule.class.js";
 import UI from "./class/UI.class.js";
 import {
@@ -23,7 +24,35 @@ const dateInfo = {
   sintomas: "",
 };
 
-export function addSchedule(e) {
+export function setDateInfo(e) {
+  dateInfo[e.target.name] = e.target.value;
+}
+
+export function resetDataInfo() {
+  form.reset();
+  dateInfo.mascota = "";
+  dateInfo.propietario = "";
+  dateInfo.telefono = "";
+  dateInfo.fecha = "";
+  dateInfo.hora = "";
+  dateInfo.sintomas = "";
+  delete dateInfo.id;
+}
+
+export function reatriveData() {
+  const objectStore = db.transaction("dates").objectStore("dates");
+  let result = [];
+  objectStore.openCursor().onsuccess = function (event) {
+    const cursor = event.target.result;
+    if (cursor) {
+      result.push(cursor.value);
+      cursor.continue();
+    }
+    ui.addSchedule(result);
+  };
+}
+
+export function saveSchedule(e) {
   e.preventDefault();
   const { mascota, propietario, telefono, fecha, hora, sintomas, id } =
     dateInfo;
@@ -40,42 +69,20 @@ export function addSchedule(e) {
   }
 
   if (id) {
-    schedule.editSchedule(id, { ...dateInfo });
+    schedule.updateSchedule(id, { ...dateInfo });
     ui.showMessage("Schedule updated", "success");
   } else {
     dateInfo.id = Date.now();
-    schedule.addSchedule({ ...dateInfo });
+    schedule.storeSchedule({ ...dateInfo });
     ui.showMessage("Schedule added", "success");
   }
 
-  ui.addSchedule(schedule);
+  reatriveData();
   resetDataInfo();
 }
 
-export function resetDataInfo() {
-  form.reset();
-  dateInfo.mascota = "";
-  dateInfo.propietario = "";
-  dateInfo.telefono = "";
-  dateInfo.fecha = "";
-  dateInfo.hora = "";
-  dateInfo.sintomas = "";
-  delete dateInfo.id;
-}
-
-export function setDateInfo(e) {
-  dateInfo[e.target.name] = e.target.value;
-}
-
-export function deleteSchedule(id) {
-  schedule.deleteSchedule(id);
-  ui.addSchedule(schedule);
-  ui.showMessage("Schedule deleted", "success");
-}
-
-export function editSchedule(id) {
-  const { mascota, propietario, telefono, fecha, hora, sintomas } =
-    schedule.getSchedule(id);
+export function editSchedule(data) {
+  const { mascota, propietario, telefono, fecha, hora, sintomas, id } = data;
 
   dateInfo.id = id;
   dateInfo.mascota = mascota;
@@ -92,7 +99,15 @@ export function editSchedule(id) {
   time.value = hora;
   symptoms.value = sintomas;
 
-  btnSave.innerText = "Editar";
-  btnSave.classList.remove("btn-success");
-  btnSave.classList.add("btn-info");
+  btnSave.innerText = "Actualizar";
+  btnSave.classList.remove("btn-primary");
+  btnSave.classList.add("btn-success");
+}
+
+export function deleteSchedule(id) {
+  schedule.deleteSchedule(id);
+
+  reatriveData();
+  resetDataInfo();
+  ui.showMessage("Schedule deleted", "success");
 }

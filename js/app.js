@@ -1,3 +1,5 @@
 import App from "./class/App.class.js";
 
-new App();
+window.onload = () => {
+  new App();
+};

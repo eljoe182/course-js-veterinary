@@ -29,9 +29,9 @@ class UI {
       div.remove();
     }, 1000);
   }
-  addSchedule({ schedules }) {
+  addSchedule(data) {
     dateList.innerHTML = "";
-    schedules.forEach((row) => {
+    data.forEach((row) => {
       const { mascota, propietario, telefono, fecha, hora, sintomas, id } = row;
       const li = document.createElement("li");
 
@@ -163,7 +163,7 @@ class UI {
       btnEdit.classList.add("btn", "btn-info", "col-6");
       btnEdit.innerText = "Editar";
       btnEdit.type = "button";
-      btnEdit.onclick = () => editSchedule(id);
+      btnEdit.onclick = () => editSchedule(row);
 
       divButtons.appendChild(btnDelete);
       divButtons.appendChild(btnEdit);
@@ -174,8 +174,8 @@ class UI {
     });
 
     btnSave.innerText = "Crear Cita";
-    btnSave.classList.remove("btn-info");
-    btnSave.classList.add("btn-success");
+    btnSave.classList.remove("btn-success");
+    btnSave.classList.add("btn-primary");
   }
 }
 
